@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отправка IP-адреса</title>
+</head>
+<body>
+    <h1>Отправить свой IP-адрес на почту</h1>
+    <form id="ipForm">
+        <input type="hidden" id="ipAddress" name="ipAddress">
+        <button type="submit">Отправить IP</button>
+    </form>
+
+    <script>
+        // Получение IP-адреса через внешнюю API
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ipAddress').value = data.ip;
+            })
+            .catch(error => {
+                console.error('Ошибка при получении IP:', error);
+            });
+
+        // Отправка формы на сервер
+        document.getElementById('ipForm').addEventListener('submit', function(event) {
+            event.preventDefault();  // Останавливаем стандартное поведение формы
+
+            const ip = document.getElementById('ipAddress').value;
+            const formData = new FormData();
+            formData.append('ipAddress', ip);
+
+            fetch('send-ip.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(result => {
+                alert('IP-адрес отправлен!');
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке:', error);
+            });
+        });
+    </script>
+</body>
+</html>
