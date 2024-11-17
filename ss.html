@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отправить IP-адрес на почту</title>
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+</head>
+<body>
+    <h1>Отправить свой IP-адрес на почту</h1>
+    <button id="sendIpButton">Отправить IP</button>
+
+    <script>
+        // Инициализация EmailJS
+        (function() {
+            emailjs.init('EOZ1pg1V2Y6nk7KV0');  // Замените на ваш userID, полученный на EmailJS
+        })();
+
+        document.getElementById('sendIpButton').addEventListener('click', function() {
+            // Получаем IP-адрес посетителя через API ipify
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    const ipAddress = data.ip;
+                    
+                    // Подготовка данных для отправки
+                    const templateParams = {
+                        ip_address: ipAddress
+                    };
+
+                    // Отправка письма через EmailJS
+                    emailjs.send('service_rrwfvwf', 'template_9t1qlsw', templateParams)  // Замените на ваш serviceID и templateID
+                        .then(function(response) {
+                            alert('IP-адрес отправлен на почту!');
+                        }, function(error) {
+                            console.error('Ошибка при отправке:', error);
+                        });
+                })
+                .catch(error => {
+                    console.error('Ошибка при получении IP:', error);
+                });
+        });
+    </script>
+</body>
+</html>
